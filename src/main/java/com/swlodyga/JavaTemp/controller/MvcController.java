@@ -1,7 +1,14 @@
 package com.swlodyga.JavaTemp.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.swlodyga.JavaTemp.database.TemperaturesRepository;
+import com.swlodyga.JavaTemp.model.Temperatures;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 public class MvcController {
@@ -19,4 +26,24 @@ public class MvcController {
     public String admin(){
         return "Admin id";
     }
+
+    @Autowired
+    private TemperaturesRepository temperaturesRepository;
+
+    @GetMapping("/rest/temp/getall")
+    public Page<Temperatures> getTemp(Pageable pageable){
+        return temperaturesRepository.findAll(pageable);
+    }
+
+    @GetMapping("/rest/temp/{id}")
+    public Optional<Temperatures> getTemp(@PathVariable Long id){
+        return temperaturesRepository.findById(id);
+    }
+
+    @PostMapping("/rest/temp")
+    public Temperatures createTemp(@RequestBody Temperatures createTemp)throws Exception{
+        return temperaturesRepository.save(createTemp);
+    }
+
+
 }
